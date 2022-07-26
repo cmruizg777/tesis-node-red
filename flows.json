@@ -1,0 +1,876 @@
+[
+    {
+        "id": "a19e3e2fde0bb1c4",
+        "type": "tab",
+        "label": "Nivel 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "e7875ea2deb5760a",
+        "type": "mqtt in",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Sensores del Nivel1",
+        "topic": "level1/sensors",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "deabcbef27bab14c",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 110,
+        "y": 40,
+        "wires": [
+            [
+                "f2924b2fda88182b",
+                "196deee444d7863c"
+            ]
+        ]
+    },
+    {
+        "id": "f2924b2fda88182b",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Trama de Datos",
+        "func": "let sensorValues = msg.payload.split(\";\");\nlet numericValues = sensorValues.map( value => Number(value) );\nlet data = [];\nlet luz = 32104*Math.exp(-0.006*numericValues[2]);\nluz = Math.round(luz * 100) / 100\nlet hums = 600;\nif(numericValues[3] < 800 && numericValues[4]<800){\n    hums = (numericValues[3]+numericValues[4])/2 ;\n}else{\n    if(numericValues[3]>800){\n        msg.error = \"//Sensor 1 Desconectado\";\n    }\n    if(numericValues[4]>800){\n        msg.error += \"//Sensor 2 Desconectado\";\n    }\n}\ndata.push(numericValues[0]);\ndata.push(numericValues[1]);\ndata.push(luz);\ndata.push(hums);\nmsg.payload = data;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "cf7f834d3f74da38",
+                "206854241edf66c9",
+                "b447dcae17d27177",
+                "d0932c10a00453c7",
+                "797cfc2d9492a53f",
+                "6115176fc68d97ae"
+            ]
+        ]
+    },
+    {
+        "id": "cf7f834d3f74da38",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Temperatura",
+        "func": "let data = msg.payload ;\nmsg.payload = data[0];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 40,
+        "wires": [
+            [
+                "686d6a46d8b9a138"
+            ]
+        ]
+    },
+    {
+        "id": "b447dcae17d27177",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Luminosidad",
+        "func": "let data = msg.payload ;\nmsg.payload = data[2];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 120,
+        "wires": [
+            [
+                "74825b9e1a515b19"
+            ]
+        ]
+    },
+    {
+        "id": "206854241edf66c9",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Hum. Relativa.",
+        "func": "let data = msg.payload ;\nmsg.payload = data[1];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 80,
+        "wires": [
+            [
+                "930520e801c7a2bf"
+            ]
+        ]
+    },
+    {
+        "id": "d0932c10a00453c7",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Hum. Suelo",
+        "func": "let data = msg.payload ;\nmsg.payload = data[3];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 160,
+        "wires": [
+            [
+                "361e41ed52e20ba8"
+            ]
+        ]
+    },
+    {
+        "id": "1693196072cdede0",
+        "type": "mqtt out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Lampara Nivel1",
+        "topic": "level1/lamp",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "deabcbef27bab14c",
+        "x": 1000,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "3a316236139325f5",
+        "type": "mqtt out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Electrovalvula Nivel1",
+        "topic": "level1/valve",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "deabcbef27bab14c",
+        "x": 1020,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "490860d2d2050ebd",
+        "type": "mqtt out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Ventiladores Nivel1",
+        "topic": "level1/fan",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "deabcbef27bab14c",
+        "x": 1010,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "e4af23f412ec8cc3",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "func": "let value = msg.payload ;\nif(Array.isArray(value)) value= value[0];\nif(value===true){\n    msg.payload = \"on\";\n}else{\n    msg.payload = \"off\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 620,
+        "wires": [
+            [
+                "1693196072cdede0"
+            ]
+        ]
+    },
+    {
+        "id": "a9e2fd2f29dd47eb",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "func": "let value = msg.payload ;\nif(Array.isArray(value)) value= value[1];\nif(value===true){\n    msg.payload = \"on\";\n}else{\n    msg.payload = \"off\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 680,
+        "wires": [
+            [
+                "3a316236139325f5"
+            ]
+        ]
+    },
+    {
+        "id": "e16730acba4dc397",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "func": "let value = msg.payload ;\nif(Array.isArray(value)) value= value[2];\nif(value===false){\n    msg.payload = \"off\";\n}else{\n    msg.payload = \"on\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 740,
+        "wires": [
+            [
+                "490860d2d2050ebd"
+            ]
+        ]
+    },
+    {
+        "id": "71ce6489156910bc",
+        "type": "mysql",
+        "z": "a19e3e2fde0bb1c4",
+        "mydb": "bffa7e7c818d1636",
+        "name": "History",
+        "x": 1100,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cc2cb803596631cb",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Consulta 3",
+        "func": "let etiqueta = msg.payload[0];\nmsg.payload = msg.currentData;\nmsg.payload.push(etiqueta);\nmsg.topic=\"INSERT INTO historial (`temperatura`, `humedad`, `luz`, `humedad_suelo`, `horas_luz`,`etiqueta`, `nivel_id`) VALUES (?, ?, ?, ?, ?, ?, 1);\"\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 240,
+        "wires": [
+            [
+                "71ce6489156910bc"
+            ]
+        ]
+    },
+    {
+        "id": "58f1f59e43a3207f",
+        "type": "mqtt in",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "topic": "level1/autoOffValve",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "deabcbef27bab14c",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 610,
+        "y": 800,
+        "wires": [
+            [
+                "1b5e24240a64f7eb"
+            ]
+        ]
+    },
+    {
+        "id": "1b5e24240a64f7eb",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "autoOffValve",
+        "func": "msg.payload = false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 800,
+        "wires": [
+            [
+                "d0a2310f75f10033"
+            ]
+        ]
+    },
+    {
+        "id": "797cfc2d9492a53f",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Consulta 1",
+        "func": "const d = new Date();\nlet diff = d.getTimezoneOffset();\n//d.setMinutes(d.getMinutes()-diff);\nlet month = (d.getMonth()+1);\nif(month<10) month = \"0\" + month;\nlet date = (d.getDate());\nif(date<10) date = \"0\" + date;\nconst strFecha1 = d.getFullYear() + \"-\" + month + \"-\" + date;\nd.setDate(d.getDate() + 1)\nmonth = (d.getMonth()+1);\nif(month<10) month = \"0\" + month;\ndate = (d.getDate());\nif(date<10) date = \"0\" + date;\nconst strFecha2 = d.getFullYear() + \"-\" + month + \"-\" + date;\nmsg.topic=\"SELECT * FROM historial WHERE nivel_id=1 AND fecha > '\"+strFecha1+\"' AND fecha < '\"+strFecha2+\"' ORDER BY id DESC LIMIT 1;\"\nmsg.currentData=msg.payload;\nmsg.date = [new Date(), (new Date()).getHours()];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 170,
+        "y": 280,
+        "wires": [
+            [
+                "c0df2462beeec8af"
+            ]
+        ]
+    },
+    {
+        "id": "c0df2462beeec8af",
+        "type": "mysql",
+        "z": "a19e3e2fde0bb1c4",
+        "mydb": "bffa7e7c818d1636",
+        "name": "Ultimo Dato",
+        "x": 330,
+        "y": 200,
+        "wires": [
+            [
+                "a153b1da29ca9075"
+            ]
+        ]
+    },
+    {
+        "id": "a153b1da29ca9075",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "func": "if(msg.payload.length>0){\n    const d = new Date();\n    let diff = d.getTimezoneOffset();\n    d.setMinutes(d.getMinutes()-diff);\n    msg.payload[0].fecha.setMinutes(msg.payload[0].fecha.getMinutes()-diff);\n    let diferencia = (d - msg.payload[0].fecha)/60/1000/60;\n    if(msg.currentData[2]>100 && msg.payload[0].luz>100){\n        msg.currentData.push(msg.payload[0].horas_luz+diferencia);   \n    }else{\n        msg.currentData.push(msg.payload[0].horas_luz);\n    }\n}else{\n    msg.currentData.push(0);\n}\n//msg.payload = msg.currentData;\n\n//horas luz\nmsg.payload[0] = msg.currentData[4];\n//temperatura\nmsg.payload[1] = msg.currentData[0];\n//humedadr\nmsg.payload[2] = msg.currentData[1];\n//humedads\nmsg.payload[3] = msg.currentData[3];\n//luminosidad\nmsg.luminosidad = msg.currentData[2];\nmsg.payload = [msg.payload];\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 280,
+        "wires": [
+            [
+                "25443b4cf3e4f676",
+                "7ad5e59bd7fe25ad"
+            ]
+        ]
+    },
+    {
+        "id": "997a5e59f606efdb",
+        "type": "firebase realtime database in",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "lamp",
+        "ref": "control/lampara/nivel1",
+        "dataAtStart": true,
+        "admin": "96218676f88f05da",
+        "x": 630,
+        "y": 620,
+        "wires": [
+            [
+                "e4af23f412ec8cc3"
+            ]
+        ]
+    },
+    {
+        "id": "3eb67e9c47c58b0d",
+        "type": "firebase realtime database in",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "valve",
+        "ref": "control/valvula/nivel1",
+        "dataAtStart": true,
+        "admin": "96218676f88f05da",
+        "x": 630,
+        "y": 680,
+        "wires": [
+            [
+                "a9e2fd2f29dd47eb"
+            ]
+        ]
+    },
+    {
+        "id": "be8e259f341f7b57",
+        "type": "firebase realtime database in",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "fans",
+        "ref": "control/ventiladores/nivel1",
+        "dataAtStart": true,
+        "admin": "96218676f88f05da",
+        "x": 630,
+        "y": 740,
+        "wires": [
+            [
+                "e16730acba4dc397"
+            ]
+        ]
+    },
+    {
+        "id": "d0a2310f75f10033",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "valve off",
+        "ref": "control/valvula/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 1030,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "686d6a46d8b9a138",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "temp",
+        "ref": "monitoreo/temperatura/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 790,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "930520e801c7a2bf",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "humr",
+        "ref": "monitoreo/humedadr/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 790,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "74825b9e1a515b19",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "lum",
+        "ref": "monitoreo/luminosidad/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 790,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "361e41ed52e20ba8",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "hums",
+        "ref": "monitoreo/humedads/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 790,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "25443b4cf3e4f676",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Horas Luz",
+        "func": "msg.payload = msg.payload[0][0];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 200,
+        "wires": [
+            [
+                "c43fa9da66b71677"
+            ]
+        ]
+    },
+    {
+        "id": "c43fa9da66b71677",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "horasl",
+        "ref": "monitoreo/horas_luz/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 790,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7ad5e59bd7fe25ad",
+        "type": "predictor",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "DTL",
+        "modelPath": "test/datasets/model",
+        "modelName": "sufdtc",
+        "x": 710,
+        "y": 260,
+        "wires": [
+            [
+                "cc2cb803596631cb",
+                "1105befb04580eb4"
+            ],
+            [
+                "fdaa1befc86beaad"
+            ]
+        ]
+    },
+    {
+        "id": "fdaa1befc86beaad",
+        "type": "debug",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 570,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "32b323fe8cf866a7",
+        "type": "mysql",
+        "z": "a19e3e2fde0bb1c4",
+        "mydb": "bffa7e7c818d1636",
+        "name": "Etiqueta",
+        "x": 720,
+        "y": 420,
+        "wires": [
+            [
+                "af9cec09c15c9945",
+                "b6ac2af9d17a8f97"
+            ]
+        ]
+    },
+    {
+        "id": "1105befb04580eb4",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Consulta 2",
+        "func": "\nmsg.topic=\"SELECT nombre FROM etiquetas WHERE id=? LIMIT 1;\"\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 320,
+        "wires": [
+            [
+                "32b323fe8cf866a7"
+            ]
+        ]
+    },
+    {
+        "id": "b6ac2af9d17a8f97",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "func": "if(Array.isArray(msg.payload)){\n    let etiqueta = msg.payload[0].nombre;\n    msg.payload = etiqueta;\n    if(etiqueta!==\"CONDICIONES OPTIMAS\"){\n        const d = new Date();\n        let state = etiqueta.split(\" - \");\n        let actions = [true,false,false];\n        if(state[1]==\"FALTA DE HORAS LUZ\" && d.getHours() >= 1) actions[0] = true;\n        if(state[2]==\"BAJA HUMEDAD DEL SUELO\") actions[1] = true;\n        if(state[0]==\"TEMPERATURA ALTA\") actions[2] = true;\n        msg.payload = actions;\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 540,
+        "wires": [
+            [
+                "e16730acba4dc397",
+                "a9e2fd2f29dd47eb",
+                "e4af23f412ec8cc3"
+            ]
+        ]
+    },
+    {
+        "id": "9be3747174c647d8",
+        "type": "mqtt in",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Lamp del Nivel1",
+        "topic": "level1/actuators/lamp",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "deabcbef27bab14c",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 620,
+        "wires": [
+            [
+                "182e271292766ac4"
+            ]
+        ]
+    },
+    {
+        "id": "182e271292766ac4",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "func": "msg.payload = msg.payload == \"1\" ? true:false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 620,
+        "wires": [
+            [
+                "778302ca84da7107"
+            ]
+        ]
+    },
+    {
+        "id": "9d11042df8af19d2",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "func": "msg.payload = msg.payload == \"1\" ? true:false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 680,
+        "wires": [
+            [
+                "71f2db1829a7ce71"
+            ]
+        ]
+    },
+    {
+        "id": "b8a379d154c28971",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "func": "msg.payload = msg.payload == \"1\" ? true:false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 740,
+        "wires": [
+            [
+                "8a8ae548a1fd7711"
+            ]
+        ]
+    },
+    {
+        "id": "778302ca84da7107",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "lamp",
+        "ref": "control/lampara/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 430,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "71f2db1829a7ce71",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "valve",
+        "ref": "control/valvula/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 430,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8a8ae548a1fd7711",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "fans",
+        "ref": "control/ventiladores/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 430,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5dbb28950ed8d633",
+        "type": "mqtt in",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Valve del Nivel1",
+        "topic": "level1/actuators/lvalve",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "deabcbef27bab14c",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 680,
+        "wires": [
+            [
+                "9d11042df8af19d2"
+            ]
+        ]
+    },
+    {
+        "id": "2c49df995743070d",
+        "type": "mqtt in",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "Fans del Nivel1",
+        "topic": "level1/actuators/fans",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "deabcbef27bab14c",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 740,
+        "wires": [
+            [
+                "b8a379d154c28971"
+            ]
+        ]
+    },
+    {
+        "id": "af9cec09c15c9945",
+        "type": "function",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "estado",
+        "func": "if(Array.isArray(msg.payload)){\n    let etiqueta = msg.payload[0].nombre;\n    msg.payload = etiqueta;\n}else{\n    msg.payload = \"Error de clasificacion Nivel1\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 420,
+        "wires": [
+            [
+                "02ff6461f75594fd"
+            ]
+        ]
+    },
+    {
+        "id": "02ff6461f75594fd",
+        "type": "firebase realtime database out",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "estado",
+        "ref": "monitoreo/estado/nivel1",
+        "operation": "set",
+        "admin": "96218676f88f05da",
+        "x": 1050,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "196deee444d7863c",
+        "type": "debug",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 370,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "6115176fc68d97ae",
+        "type": "debug",
+        "z": "a19e3e2fde0bb1c4",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "error",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 320,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "deabcbef27bab14c",
+        "type": "mqtt-broker",
+        "name": "RaspBerry",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "bffa7e7c818d1636",
+        "type": "MySQLdatabase",
+        "name": "smart-urban-farm DB",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "smart-urban-farm",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "96218676f88f05da",
+        "type": "firebase admin",
+        "name": "Firebase smart urban farm"
+    }
+]
